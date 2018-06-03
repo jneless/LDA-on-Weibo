@@ -9,10 +9,11 @@ import traceback
 from datetime import datetime
 from datetime import timedelta
 from lxml import etree
+import conf
 
 
 class Weibo:
-    cookie = {"Cookie": "_T_WM=218d5ff524daba6c61bb48c32dcfddc8; SCF=AhLFFiIhCnJBpJYhBP_eX7-lrMwwQlxUnKpQTyTIQBToihrkxopU5K5YgxyQEMEzYnC094riqGZxZNq_-1vGLuQ.; SUBP=0033WrSXqPxfM725Ws9jqgMF55529P9D9WhnNy-sRJ6.03zjCeJY7AX95JpX5KzhUgL.Foq0ShB4e02fSKe2dJLoIpjLxKqL1KnLBo-LxKMLBKMLBo5NSKBRSoB0S0nt; MLOGIN=1; H5_INDEX=3; H5_INDEX_TITLE=%E6%98%B5%E7%A7%B0754864378; M_WEIBOCN_PARAMS=featurecode%3D20000320%26lfid%3D103103%26luicode%3D20000173%26fid%3D102803_ctg1_8999_-_ctg1_8999_home%26uicode%3D10000011; SUB=_2A253-XIpDeRhGeRM41YS8yzMwzuIHXVVAh5hrDV6PUJbkdANLXb2kW1NU9I7U3WNlUto7Xqo2xS8JofuLcMpJihY; SUHB=0N2kEF1u1zjmvC; SSOLoginState=1526530681"}  # 将your cookie替换成自己的cookie
+    cookie = {"Cookie": conf.cookies}  # 将your cookie替换成自己的cookie
 
     # Weibo类初始化
     def __init__(self, user_id, filter=0):
@@ -247,7 +248,7 @@ class Weibo:
 def main():
     try:
         # 使用实例,输入一个用户id，所有信息都会存储在wb实例中
-        user_id = 1774978073  # 可以改成任意合法的用户id（爬虫的微博id除外）
+        user_id = conf.UserID  # 可以改成任意合法的用户id（爬虫的微博id除外）
         filter = 1  # 值为0表示爬取全部微博（原创微博+转发微博），值为1表示只爬取原创微博
         wb = Weibo(user_id, filter)  # 调用Weibo类，创建微博实例wb
         wb.start()  # 爬取微博信息
