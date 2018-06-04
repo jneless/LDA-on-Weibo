@@ -11,11 +11,14 @@ from datetime import timedelta
 from lxml import etree
 import conf
 
-
+#爬取器
 class Weibo:
+
+
     cookie = {"Cookie": conf.cookies}  # 将your cookie替换成自己的cookie
 
     # Weibo类初始化
+    # 构造函数
     def __init__(self, user_id, filter=0):
         self.user_id = user_id  # 用户id，即需要我们输入的数字，如昵称为“Dear-迪丽热巴”的id为1669879400
         self.filter = filter  # 取值范围为0、1，程序默认值为0，代表要爬取用户的全部微博，1代表只爬取用户的原创微博
@@ -33,11 +36,22 @@ class Weibo:
     # 获取用户昵称
     def get_username(self):
         try:
+            #要访问的页面地址
             url = "https://weibo.cn/%d/info" % (self.user_id)
+
+            #得到页面的全部html代码，如果网站不存在，则报错
             html = requests.get(url, cookies=self.cookie).content
+
+            #转化为树形结构
             selector = etree.HTML(html)
+
+            #得到title节点重的text内容
             username = selector.xpath("//title/text()")[0]
+
+            #去掉text字符串中最后三个字母。其是系统附加的id，无意义
             self.username = username[:-3]
+
+            #输出
             print u"用户名: " + self.username
         except Exception, e:
             print "Error: ", e
@@ -84,6 +98,9 @@ class Weibo:
             html = requests.get(weibo_link, cookies=self.cookie).content
             selector = etree.HTML(html)
             info = selector.xpath("//div[@class='c']")[1]
+
+
+            #取回后解码，改变编码为utf-8
             wb_content = info.xpath("div/span[@class='ctt']")[0].xpath(
                 "string(.)").encode(sys.stdout.encoding, "ignore").decode(
                 sys.stdout.encoding)
@@ -99,13 +116,23 @@ class Weibo:
                 self.user_id, self.filter)
             html = requests.get(url, cookies=self.cookie).content
             selector = etree.HTML(html)
+
+
+            #判断是不是只有一页微博
             if selector.xpath("//input[@name='mp']") == []:
                 page_num = 1
             else:
+            #如果不为1，则取回正确微博页数
                 page_num = (int)(selector.xpath(
                     "//input[@name='mp']")[0].attrib["value"])
+
+            #正则表达式，定义"数字，任意字符，数字"
             pattern = r"\d+\.?\d*"
+
+
             for page in range(1, page_num + 1):
+
+                #抓取全部剩余微博页面
                 url2 = "https://weibo.cn/u/%d?filter=%d&page=%d" % (
                     self.user_id, self.filter, page)
                 html2 = requests.get(url2, cookies=self.cookie).content
@@ -126,9 +153,15 @@ class Weibo:
                         if a_link:
                             if a_link[-1] == "/comment/" + weibo_id:
                                 weibo_link = "https://weibo.cn" + a_link[-1]
+
+                                #得到文字内容
                                 wb_content = self.get_long_weibo(weibo_link)
+
+                                #判断是否为空
                                 if wb_content:
                                     weibo_content = wb_content
+
+
                         self.weibo_content.append(weibo_content)
                         print u"微博内容：" + weibo_content
 
@@ -203,6 +236,8 @@ class Weibo:
                 result_header = u"\n\n原创微博内容：\n"
             else:
                 result_header = u"\n\n微博内容：\n"
+
+            #python生成器，得到一组数据
             result = (u"用户信息\n用户昵称：" + self.username +
                       u"\n用户id：" + str(self.user_id) +
                       u"\n微博数：" + str(self.weibo_num) +
@@ -210,6 +245,17 @@ class Weibo:
                       u"\n粉丝数：" + str(self.followers) +
                       result_header
                       )
+
+            '''
+            用户信息
+            用户昵称：康康康康------
+            用户id：2739868131
+            微博数：242
+            关注数：112
+            粉丝数：108
+            '''
+
+
             for i in range(1, self.weibo_num2 + 1):
                 text = (str(i) + ":" + self.weibo_content[i - 1] + "\n" +
                         u"发布时间：" + self.publish_time[i - 1] + "\n" +
@@ -217,14 +263,33 @@ class Weibo:
                         u"	 转发数：" + str(self.retweet_num[i - 1]) +
                         u"	 评论数：" + str(self.comment_num[i - 1]) + "\n\n"
                         )
+
+                '''
+                1:我刚刚在#签到领红包#领到了0.25元，每日签到领红包，签到越多红包越大，快来一起领吧！错过一天都可惜～ 签到领红包 ​​
+                发布时间：2018-05-17 14:38
+                点赞数：0	 转发数：0	 评论数：0
+                '''
+
                 result = result + text
+
+            #得到当前文件路径，同时生成weibo文件夹
             file_dir = os.path.split(os.path.realpath(__file__))[
                 0] + os.sep + "weibo"
+
+            #如不存在，则创建
             if not os.path.isdir(file_dir):
                 os.mkdir(file_dir)
+
+            #定义文件路径，userid.txt
             file_path = file_dir + os.sep + "%d" % self.user_id + ".txt"
+
+            #打开文件
             f = open(file_path, "wb")
+
+            #写入内容
             f.write(result.encode(sys.stdout.encoding))
+
+            #关闭文件
             f.close()
             print u"微博写入文件完毕，保存路径:"
             print file_path

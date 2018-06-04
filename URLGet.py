@@ -249,6 +249,7 @@ class Weibo:
 
 # 得到指定页面的前几页粉丝
 
+# 设置伪装的http请求头部
 headers = {
 	    "Cookie": cookie
 	}
@@ -258,21 +259,35 @@ pattern2 = re.compile('\d+')
 AllUser = []
 
 for x in range(1,conf.PageNumber+1):
+
+    # 遍历所有要访问的页面
+
+    # url ="https://weibo.com/p/1003061669879400/follow?relate=fans&page= 1 "
     url=conf.PageURL + str(x)
 
+    # 定义实际请求的url和header
     request = urllib2.Request(url, headers=headers)
+
+    # 发送请求，得到http相应结果
     response = urllib2.urlopen(request)
+
+    # 得到相应中的html代码
     html = response.read()
+
+    # 在html中查找正则表达式 pattern1 ——结构是："/u，数字"
     html=pattern1.findall(html)
+
+    # 重新拼接成一个字符串，为了一下步数据处理
     html="".join(html)
+
+    # 查找全部 "数字"，返回一个链表结构
     html=pattern2.findall(html)
+
+    # 和上一次的链表合并
     AllUser.extend(html)
 
-# ALLUser Set中为全部粉丝的ID
+#去除重复用户，set集合
 AllUser = set(AllUser)
-
-
-
 
 for x in AllUser:
 
@@ -292,5 +307,6 @@ for x in AllUser:
             print u"最新/置顶 微博获得转发数：" + str(wb.retweet_num[0])
             print u"最新/置顶 微博获得评论数：" + str(wb.comment_num[0])
     except Exception, e:
-        print "Error: ", e
-        traceback.print_exc()
+        pass
+        #print "Error: ", e
+        #traceback.print_exc()
