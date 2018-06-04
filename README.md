@@ -5,8 +5,8 @@
 请同时配置python2 与 python3
 
 ## 简介 
-"主题模型"是对文本中隐含主题的一种建模方法
-每个主题其实是词表上单词的概率分布
+"主题模型"是对文本中隐含主题的一种建模方法。
+每个主题其实是词表上单词的概率分布。
 
 常见的主题模型有3种：
 1. PLSA
@@ -25,9 +25,9 @@ LDA模型详细介绍请参考[这里](https://blog.csdn.net/dream_catcher_10/ar
 
 分析一个用户的用户特征
 
-请配置 conf.cookies 为可用cookies
-请配置 conf.num_topics = 1
-请配置 conf.UserID = 想爬取的用户ID
+* 请配置 conf.cookies 为可用cookies
+* 请配置 conf.num_topics = 1
+* 请配置 conf.UserID = 想爬取的用户ID
 
 
 ```Shell
@@ -40,10 +40,10 @@ python3 toptopicmodelLDA.py
 
 分析一个用户的所有粉丝特征
 
-请配置 conf.cookies 为可用cookies
-请配置 conf.num_topics 为所预估的用户群数量（例如：黑粉，真爱粉 conf.num_topics = 2 ）
-请配置 conf.PageURL = 想爬取的用户的粉丝页面根目录
-请配置 conf.PageNumber = 想爬取的粉丝页面数量（微博默认一个页面为20个粉丝）
+* 请配置 conf.cookies 为可用cookies
+* 请配置 conf.num_topics 为所预估的用户群数量（例如：黑粉，真爱粉 conf.num_topics = 2 ）
+* 请配置 conf.PageURL = 想爬取的用户的粉丝页面根目录
+* 请配置 conf.PageNumber = 想爬取的粉丝页面数量（微博默认一个页面为20个粉丝）
 
 ```Shell
 python URLGet.py
