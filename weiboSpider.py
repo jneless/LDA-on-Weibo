@@ -274,7 +274,7 @@ class Weibo:
 
             #得到当前文件路径，同时生成weibo文件夹
             file_dir = os.path.split(os.path.realpath(__file__))[
-                0] + os.sep + "weibo"
+                0] + os.sep + "output1"
 
             #如不存在，则创建
             if not os.path.isdir(file_dir):
