@@ -21,6 +21,10 @@ LDA 包含“词 - 主题 - 文档” 三层结构。
 LDA模型详细介绍请参考[这里](https://blog.csdn.net/dream_catcher_10/article/details/50812371)
 
 ## 运行步骤
+### cookies获取
+打开chrome开发者工具，选择Network，勾选Preserve log
+登陆weibo.cn，可找到名字为weibo.cn的文件，复制其中cookies即可
+
 ### 单用户分析
 
 分析一个用户的用户特征
